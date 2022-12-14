@@ -1,0 +1,53 @@
+def get_error_indices(text):  # 3  ㅇ
+    '''
+    목표: Series형 입력값 중 이상값 + 척도 이상 = 에러 값들의 위치 추출.
+    입력값: (감정별) Series
+    출력값: (감정별) 에러 값들의 위치 목록. 
+    '''    
+    error_indices = []
+    
+    # 1. 이상/에러값 추출 = int 아닌 값
+    
+    for idx in text.index:
+        value = text.at[idx] 
+
+        try: 
+            literal_value = ast.literal_eval(value)
+            # 표현식
+
+        except SyntaxError as e :   #  {표현식 = 공백값} 에러
+#            print("SyntaxError -- ", idx, emotion, value, e)
+            if idx not in error_indices:  # 에러리스트에 없으면 추가
+                error_indices.append(idx)
+            else:
+                error_indices.append(idx)
+
+        except ValueError as e:  # {표현식 != 숫자} 에러
+            try:
+                int_convert_value = int(value)  # 표현식이 아닌 값 자제를 int형변환 시도
+                
+            except ValueError as e:  # {값 자체 != 숫자} 에러
+#                print("ValueError -- ", idx, emotion, value, e)
+                if idx not in error_indices: 
+                    error_indices.append(idx)
+                else:
+                    error_indices.append(idx)
+
+            except TypeError as e:  # {값 자체 != 숫자형} 에러
+#                print("TypeError -- ", idx, emotion, value, e)
+                if idx not in error_indices:
+                    error_indices.append(idx)
+                else:
+                    error_indices.append(idx)
+                
+    # 2. 척도 이상 값 : 전체 텍스트에 대해   
+
+        else: 
+            
+            if literal_value >= 0 and literal_value <= 5:
+                pass
+            else: error_indices.append(idx)
+
+
+    return list(set(error_indices))
+    # 에러값들의 위치.
